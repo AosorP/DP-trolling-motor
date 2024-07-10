@@ -1,6 +1,6 @@
 # DP-trolling-motor
 Dynamic positioning on sea with GPS based electrical trolling motor
-Android phone app (MIT app inventor) is your remote control
+Android phone app (MIT app inventor) is your remote control "DP_MAPA_2S_V121123_TEST.apk"
 Bluetooth connection with Android phone APP: press "Connect BT" and pick the BT link of your BLE connected to MEGA
 Before starting you must send PWM maximum to Mega, you do that by adjusting the slider in app (0-255 PWM) and press "Send Motor Speed PWM". With slider you can adjust the power of motor depending on wind speed, sea stream, battery voltage. It limits maximum PWM output. Without that you will not move since initial value is zero.
 You can get current GPS position from GPS module on MEGA and store it in your Android APP and Arduino MEGA: press "1) Get GPS data" (getting coordinates from Arduino GPS and store it to data base, only single point), then press "2) Send GPS data" (it sends it back to Mega), press "3) Set way" and "Go to Waypoint" to start. 
