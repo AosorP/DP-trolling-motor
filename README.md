@@ -31,4 +31,4 @@ you can learn the track and fallow that track in loops: press "Learn track" (all
 - 2x DIODE MUR1560 as freewheeling diode (two conected in paralel for frotection of MOSFET motor driver
 - Gear box hausing with gears (1:18 ratio) that will acomodate stepper motor that rotates the trolling motor in desired direction (3D printed for 30 mm shaft)
 
-
+<br>
