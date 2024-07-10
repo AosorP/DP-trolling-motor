@@ -1,5 +1,5 @@
 # DP-trolling-motor
-Dynamic positioning on sea with GPS based electrical trolling motor;
+Dynamic positioning on sea with GPS based electrical trolling motor
 Android phone app (MIT app inventor) is your remote control "DP_MAPA_2S_V121123_TEST.apk"
 Bluetooth connection with Android phone APP: press "Connect BT" and pick the BT link of your BLE connected to MEGA
 Before starting you must send PWM maximum to Mega, you do that by adjusting the slider in app (0-255 PWM) and press "Send Motor Speed PWM". With slider you can adjust the power of motor depending on wind speed, sea stream, battery voltage. It limits maximum PWM output. Without that you will not move since initial value is zero.
