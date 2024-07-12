@@ -101,25 +101,25 @@ void bluetooth()
         break;
 
       case 12:
-        Serial1.println(F("Jog Froward 3 m"));
+        Serial1.println(F("Jog Froward 2 m"));
         delay(800);
         JogForward();
         break;
 
       case 13:
-        Serial1.println(F("Jog Revers 3 m"));
+        Serial1.println(F("Jog Revers 2 m"));
         delay(800);
         JogReverse();
         break;
 
       case 14:
-        Serial1.println(F("Jog Left 3 m"));
+        Serial1.println(F("Jog Left 2 m"));
         delay(800);
         JogLeft();
         break;
 
       case 15:
-        Serial1.println(F("Jog Right 3 m"));
+        Serial1.println(F("Jog Right 2 m"));
         delay(800);
         JogRight();
         break;
@@ -155,7 +155,7 @@ void bluetooth()
         break;
 
       case 20:
-        storeWaypoints();    //Šalje aktualne NEO GPS-kordinate iz Arduina u MitApp aplikaciju "Get GPS data"
+        storeWaypoints();    //Sends actual GPS-coordinated from MEGA (NEO-GPS module) to MitApp application on mobile phone "Get GPS data"
         break;
 
     } // end of switch case
@@ -196,7 +196,8 @@ void bluetooth()
         Serial1.println(F("Invalid RADIUS! (10-100m)"));
       }
     }
-  }                                                              // end of while loop Serial1 read
+  }  // end of while loop Serial1 read
+  
   // **************************************************************************************************************************************************
   // if no data from Bluetooth
   if (Serial1.available() < 0)                                 // if an error occurs, confirm that the arduino mega board is selected in the Tools Menu
@@ -219,14 +220,14 @@ void Forward()
 
     unsigned long currentMillis = millis();
     if (((unsigned long)(currentMillis - previousMillis) >= interval_a) && (pwm < run_Speed))  {
-      pwm = pwm + a;                     // akceleracija
-      analogWrite(runPin, pwm);         // Go Forward "Pali troling motor"
+      pwm = pwm + a;                     // acceleration of trolling motor (soft start)
+      analogWrite(runPin, pwm);         // Go Forward "Starts running trolling motor"
       Serial.print("PWM=");
       Serial.println(pwm);
       previousMillis = currentMillis;
     }
     else if (((unsigned long)(currentMillis - previousMillis) >= interval_b) && (run_Speed < pwm)) {
-      pwm = pwm - a;                    //deakceleracija
+      pwm = pwm - a;                    // deacceleration of trolling motor (soft stop)
       analogWrite(runPin, pwm);
       Serial.println(pwm);
       previousMillis = currentMillis;
@@ -242,7 +243,7 @@ void StopCar()
   while (pwm > 0) {
     unsigned long currentMillis = millis();
     if (((unsigned long)(currentMillis - previousMillis) >= interval_b)) {
-      pwm = pwm - a;                    //deakceleracija
+      pwm = pwm - a;                    // deacceleration of trolling motor (soft stop)
       analogWrite(runPin, pwm);
       Serial.print("PWM=");
       Serial.println(pwm);
@@ -251,7 +252,7 @@ void StopCar()
   }
   digitalWrite(runPin, LOW);
   noTone(stepPin);
-  digitalWrite(enablePin, HIGH);//deaktivira stepper driver A4988
+  digitalWrite(enablePin, HIGH);// disabling stepper motor driver A4988
 
   pwm = 0;
   count = 0;
@@ -266,16 +267,16 @@ void StopCar()
 // **************************************************************************************************************************************************
 void RightTurn()
 {
-  digitalWrite(enablePin, LOW); //aktivira stepper driver A4988
+  digitalWrite(enablePin, LOW); //enables stepper motor driver A4988
   delay(5);
-  for (int stepCount = 0 ; stepCount <= 800; stepCount += 1) {  //step count 25*16 za 5°; 50*16 za 10°; 100*16 za 20° getriba 11:100;1:16 microstepping
-    digitalWrite(dirPin, LOW);// Stepper motor se okreće u smijeru kazaljke na satu LOW
+  for (int stepCount = 0 ; stepCount <= 800; stepCount += 1) {  //step count 25*16 for 5°; 50*16 for 10°; 100*16 for 20° gearbox 11:100; 1:16 microstepping on A4988
+    digitalWrite(dirPin, LOW);// Stepper motor turns CW (check during tet run)
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(250);
     digitalWrite(stepPin, LOW);
     delayMicroseconds(250);
   }
-  digitalWrite(enablePin, HIGH); //deaktivira stepper driver A4988
+  digitalWrite(enablePin, HIGH); // disabling stepper motor driver A4988
 }
 
 // **************************************************************************************************************************************************
@@ -287,10 +288,10 @@ void LongRightTurn()
     if ((blueToothVal == 5) || (blueToothVal == 16)) {
       break;
     }
-    digitalWrite(enablePin, LOW); //aktivira stepper driver A4988
+    digitalWrite(enablePin, LOW); // enables stepper motor driver A4988
     delay(5);
-    digitalWrite(runPin, LOW); // Zaustavi troling motor
-    digitalWrite(dirPin, LOW);// Stepper motor se okreće u smijeru kazaljke na satu LOW
+    digitalWrite(runPin, LOW); // stops the trolling motor
+    digitalWrite(dirPin, LOW);// Stepper motor turns CW (check during tet run)
     //-----------------------------------------------
     unsigned long currentMillis = millis();
     if (((unsigned long)(currentMillis - previousMillis) >= M) && (stepAcc < Puls))  {
@@ -306,16 +307,16 @@ void LongRightTurn()
 // **************************************************************************************************************************************************
 void LeftTurn()
 {
-  digitalWrite(enablePin, LOW); //aktivira stepper driver A4988
+  digitalWrite(enablePin, LOW); // enables stepper motor driver A4988
   delay(5);
   for (int stepCount = 0 ; stepCount <= 800; stepCount += 1) {  //step count 25*16 za 5°; 50*16 za 10°; 100*16 za 20° getriba 11:100;1:16 microstepping
-    digitalWrite(dirPin, HIGH);// Stepper motor se okreće suprotno od smijera kazaljke na satu HIGH
+    digitalWrite(dirPin, HIGH); // Stepper motor turns CCW (check during tet run)
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(250);
     digitalWrite(stepPin, LOW);
     delayMicroseconds(250);
   }
-  digitalWrite(enablePin, HIGH); //deaktivira stepper driver A4988
+  digitalWrite(enablePin, HIGH); //disabling stepper motor driver A4988
 }
 
 // **************************************************************************************************************************************************
@@ -327,10 +328,10 @@ void LongLeftTurn()
     if ((blueToothVal == 5) || (blueToothVal == 16)) {
       break;
     }
-    digitalWrite(enablePin, LOW); //aktivira stepper driver A4988
+    digitalWrite(enablePin, LOW); // enables stepper motor driver A4988
     delay(5);
-    digitalWrite(runPin, LOW); // Zaustavi troling motor
-    digitalWrite(dirPin, HIGH);// Stepper motor se okreće suprotno od smijera kazaljke na satu HIGH
+    digitalWrite(runPin, LOW); // stops the troling motor
+    digitalWrite(dirPin, HIGH);// Stepper motor turns CCW (check during tet run)
     //-----------------------------------------------
     unsigned long currentMillis = millis();
     if (((unsigned long)(currentMillis - previousMillis) >= M) && (stepAcc < Puls))  {
@@ -352,7 +353,7 @@ void storeWaypoints()
     Home_LAT[ab] = gps.location.lat();
     Home_LON[ab] = gps.location.lng();
 
-    Serial1.print("#");  //Begining of line for app           // send serial string to arduino "#,45.123456,13.123456 "
+    Serial1.print("#");  //Begining of line for app           // send serial string to arduino format like this "#,45.123456,13.123456 "
     Serial1.print(",");  //separator for app
     Serial1.print(Home_LAT[0], 6); //Latitude for app
     Serial1.print(","); //separator for app
@@ -442,9 +443,9 @@ void JogRight() {
 
   clearWaypoints();
   delay(50);
-  setWaypoint();  //Postavlja GPS toćku kao waypoint "Set Way"
+  setWaypoint();  //Sets current GPS coordinates as waypoint "Set Way"
   delay(50);
   ac = 0;
-  goWaypoint();   //Pokreće "Go to Waypoint"
+  goWaypoint();   //Initiates go to waypoint procedure “Go to Waypoint"
 
 }
