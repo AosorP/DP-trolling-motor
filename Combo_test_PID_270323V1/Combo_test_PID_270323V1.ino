@@ -99,7 +99,7 @@ int error;
 //int Heading_A;                                                     // variable to store compass heading
 //int Heading_B;                                                    // variable to store compass heading in Opposite direction
 int pass = 0;                                                      // variable to store which pass the rover is on
-int kut;                                                          // razlika kuta (kut kompasa "heading" -  GPS_Course)
+int kut;                                                          // angle difference (compass "heading" -  GPS_Course)
 
 // Magnetic declination
 #define True_North true         // change this to "true" for True North                
@@ -146,22 +146,22 @@ float Azcnf = 0;
 //******************************************************************************************************
 // Stepper motor
 
-#define dirPin 2 //definira pin smjera vrtnje steper motora
-#define stepPin 3 //definira pin za korak steper motora
-#define enablePin 4 //definira pin za aktivaciju i deaktivaciju A4899 stepper drivera 
+#define dirPin 2 //define D2 as the direction pin of stepper motor driver
+#define stepPin 3 //define D3 as the stepp pin of stepper motor driver
+#define enablePin 4 //define D4 pin for activation and deactivation of A4899 stepper motor driver
 int stepAcc;
-int Puls = 6000; //definira brzinu koraka stepper motora "tone"; (6000 za 16 microstep)
-int M = 1; //definira millis kod akceleracije stepper motora; 10 (manja brojka brža akceleracija)
+int Puls = 6000; //define the speed os stepper motor step "tone" (6000 for 16 microsteps)
+int M = 1; //define millis in stepper motor acceleration procedure;  (lover number faster acceleration)
 
 //********************************************************************
 // Trolling motor
 
-int runPin = 7; //Pin za PWM kontrolu mosfeta motora
+int runPin = 7; //define D7 as PWM outpot for 30A MOSFET troling motor driver
 int pwm;
-int a = 1;   //inkrementalna vrijednost ubrzavanja PWM
-int b = 5;   //inkrementalna vrijednost usporavanja PWM
-int interval_a = 8; // interval akceleracije, svako koliko sekundi će se pvečavati vrijednost PWM za vrijednost a=8
-int interval_b = 4; // interval deakceleracije,svako koliko milisekundi će se smanjiti vrijednost PWM za vrijednost a=4
+int a = 1;   //incremental value for PWM (acceleration of trolling motor)
+int b = 5;   //incremental value for PWM (deacceleration of trolling motor)
+int interval_a = 8; // accel.value for PWM acceleration
+int interval_b = 4; // deaccel.value for PWM deacceleration
 unsigned long previousMillis = 0;
 unsigned long pMillis = 0;
 unsigned long p1Millis = 0;
@@ -185,7 +185,7 @@ unsigned long previousTime = 0;
 unsigned long currentTime;
 double delta;
 double output;
-double setPoint = 0.0;                    //histereza udaljenosti od spremljene GPS SetPoint pozicije "radijus 2,5 m"
+double setPoint = 0.0;                    //distance (hysteresis) from GPS Setpoint stored position (you can chang this to 2,5 to eliminate GPS drifting)
 double cumdelta;
 double ratedelta;
 double timer;
@@ -258,12 +258,12 @@ void setup() {
   TCCR4B = TCCR4B & B11111000 | B0000101; // for PWM frequency of 30.64 Hz; devider 256; pin D6,D7,D8 mega 8 bit
 
   //-----Set output pins for Stepper motor and Trolling motor
-  pinMode(dirPin, OUTPUT);//  Definira pin 2 kao izlaz
-  pinMode(stepPin, OUTPUT);// Definira pin 3 kao izlaz
-  pinMode(runPin, OUTPUT);// Definira pin 7 kao izlaz
-  pinMode(enablePin, OUTPUT);// Definira pin 7 kao izlaz
+  pinMode(dirPin, OUTPUT);//  Defines D2 pin as outpoot
+  pinMode(stepPin, OUTPUT);//  Defines D3 pin as outpoot
+  pinMode(runPin, OUTPUT);//  Defines D7 pin as outpoot
+  pinMode(enablePin, OUTPUT);// Defines D4 pin as outpoot
   delay(50);
-  digitalWrite(enablePin, HIGH); //deaktivira stepper driver A4988
+  digitalWrite(enablePin, HIGH); //disable stepper driver A4988
 
 
 
@@ -273,7 +273,7 @@ void setup() {
   Serial.begin(115200);                                         // Serial 0 is for communication with the computer
   //while (!Serial);                                            // Not required for Arduino UNO but needed when porting code to the M4 Express
   Serial1.begin(9600);                                          // Serial 1 is for Bluetooth communication - DO NOT MODIFY - JY-MCU HC-06 v1.40
-  Serial2.begin(9600);                                          // Serial 2 is for GPS communication at 9600 baud -  - Ublox Neo 7m defoiult 9600
+  Serial2.begin(9600);                                          // Serial 2 is for GPS communication at 9600 baud -  - Ublox Neo 6-7m defoiult 9600
   lsm.begin();
   //************************************************************************
   //GPS-setup
