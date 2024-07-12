@@ -91,11 +91,11 @@ void go_CircleMode()
           PID_p = 0;
         }
         //-----------------------PID_i
-        if (delta <= (setPoint + 4.0) && delta >= (setPoint + 2.0)) {        //ako je delta između 2,0 i 4.0 m počne se računati se PID_i
+        if (delta <= (setPoint + 4.0) && delta >= (setPoint + 2.0)) {        //if delta is between 2,0 i 4.0 m start counting PID_i 
           if (count > 1) {
             PID_i += delta;                    // compute integral gain
           }
-          if (PID_i > 200) {                     // limitiranje PID_i na 200 = 100 output
+          if (PID_i > 200) {                  // limitiranje PID_i na 200 = 100 output (to avoid windeup)
             PID_i = 200;
           }
         }
@@ -104,7 +104,7 @@ void go_CircleMode()
         }
         //-----------------------PID_d
 
-        if (delta <= (setPoint + 6.0) && delta >= (setPoint + 0.0)) {        //ako je delta između 0,0 i 6.0 m počne se računati se PID_d
+        if (delta <= (setPoint + 6.0) && delta >= (setPoint + 0.0)) {        //if delta is between 0,0 i 6.0 m start counting PID_d
           if (count > 1) {
             PID_d = (delta - lastdelta) / 0.5;   // compute derivative
             lastdelta = delta;
@@ -114,7 +114,7 @@ void go_CircleMode()
           }
         }
 
-        timer = (unsigned long)(currentTime - previousTime); // služi za provjeru trajanja ciklusa 0,5 sek
+        timer = (unsigned long)(currentTime - previousTime); // this part serves to check PID loop timer interval that should be 0,5 sec
         previousTime = currentTime;
 
         //-----------------------PID
@@ -122,14 +122,14 @@ void go_CircleMode()
 
         //-----------------------PID output normalization to PWM
         if (output > 255) {
-          output = 255;                           //ako je izlaz veći od 255, izlaz se svodi na max pwm = 255
+          output = 255;                           //if output is higher than 255, sets pwm outpot to max. = 255
         }
         else if (output < 0) {
-          output = 0;                            //ako je izlaz manj od 0, izlaz se svodi na min pwm = 0
+          output = 0;                            //if output is lower than 0, sets pwm outpot to min. pwm = 0
         }
 
         //-----------------------
-        Foutput = output / 255;                 //faktor multiplikator 0-1 za moduliranje PWM trolling motora
+        Foutput = output / 255;                 //Output factor for PWM of trolling motor (0-1)
 
 
       }
