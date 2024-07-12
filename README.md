@@ -19,6 +19,7 @@ you can learn the track and fallow that track in loops: press "Learn track" (all
  
 # The hardware I used
 <br>
+
 - GPS sensor: NEO-6 or higher; connected on Serial 2 (RX2,TX2)
 - Digital compass with accelerometer for tilt compensation: LSM303DHLC or LSM303AGR; connected to I2C (SCL, SDA) 
 - Bluetooth module: HC-05 (HC-06); connected to Serial 1 (RX1, TX1) 
@@ -31,4 +32,3 @@ you can learn the track and fallow that track in loops: press "Learn track" (all
 - 2x DIODE MUR1560 as freewheeling diode (two conected in paralel for frotection of MOSFET motor driver
 - Gear box hausing with gears (1:18 ratio) that will acomodate stepper motor that rotates the trolling motor in desired direction (3D printed for 30 mm shaft)
 
-<br>
